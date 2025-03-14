@@ -1,0 +1,369 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Admin Panel - WiFi CTF Container Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
+
+  </head>
+  <body>
+
+
+
+
+      <!-- Profile Popup -->
+<label class="popup" style="position: fixed; top: 10px; right: 10px; z-index: 9999;">
+  <input type="checkbox" />
+  
+  <!-- Circular burger icon -->
+  <div tabindex="0" class="burger">
+    <svg
+      viewBox="0 0 24 24"
+      fill="white"
+      height="20"
+      width="20"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M12 2c2.757 0 5 2.243 5 5.001 0 2.756-2.243 5-5 5s-5-2.244-5-5c0-2.758 2.243-5.001 5-5.001zm0-2c-3.866 0-7 3.134-7 7.001 0 3.865 3.134 7 7 7s7-3.135 7-7c0-3.867-3.134-7.001-7-7.001zm6.369 13.353c-.497.498-1.057.931-1.658 1.302 2.872 1.874 4.378 5.083 4.972 7.346h-19.387c.572-2.29 2.058-5.503 4.973-7.358-.603-.374-1.162-.811-1.658-1.312-4.258 3.072-5.611 8.506-5.611 10.669h24c0-2.142-1.44-7.557-5.631-10.647z"
+      ></path>
+    </svg>
+  </div>
+
+  <!-- Popup menu -->
+  <nav class="popup-window">
+    <legend>Profile</legend>
+    <ul>
+      {% if session['username'] == 'admin' %}
+        <li>
+          <form action="{{ url_for('logout') }}" method="get">
+            <button>
+              <!-- Icon for Logout -->
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.2"
+                stroke-linecap="round"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M2.598 9h-1.055c1.482-4.638 5.83-8 10.957-8 6.347 0 11.5 5.153 11.5 11.5s-5.153 11.5-11.5 11.5c-5.127 0-9.475-3.362-10.957-8h1.055c1.443 4.076 5.334 7 9.902 7 5.795 0 10.5-4.705 10.5-10.5s-4.705-10.5-10.5-10.5c-4.568 0-8.459 2.923-9.902 7zm12.228 3l-4.604-3.747.666-.753 6.112 5-6.101 5-.679-.737 4.608-3.763h-14.828v-1h14.826z"
+                ></path>
+              </svg>
+              <span>Logout</span>
+            </button>
+          </form>
+        </li>
+      {% else %}
+        <li>
+          <form action="{{ url_for('logout') }}" method="get">
+            <button>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.2"
+                stroke-linecap="round"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M2.598 9h-1.055c1.482-4.638 5.83-8 10.957-8 6.347 0 11.5 5.153 11.5 11.5s-5.153 11.5-11.5 11.5c-5.127 0-9.475-3.362-10.957-8h1.055c1.443 4.076 5.334 7 9.902 7 5.795 0 10.5-4.705 10.5-10.5s-4.705-10.5-10.5-10.5c-4.568 0-8.459 2.923-9.902 7zm12.228 3l-4.604-3.747.666-.753 6.112 5-6.101 5-.679-.737 4.608-3.763h-14.828v-1h14.826z"
+                ></path>
+              </svg>
+              <span>Logout</span>
+            </button>
+          </form>
+        </li>
+        <li>
+          <form action="{{ url_for('delete_account') }}" method="post" onsubmit="return confirm('Are you sure you want to delete your account?');">
+            <button>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.2"
+                stroke-linecap="round"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M9 3v1H4v2h1v14c0 1.103.897 2 2 2h10c1.103 0 2-.897 2-2V6h1V4h-5V3H9zm7 18H8V6h8v15zM10 8h2v10h-2V8zm4 0h2v10h-2V8z"
+                ></path>
+              </svg>
+              <span>Delete Account</span>
+            </button>
+          </form>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
+</label>
+
+
+
+
+
+
+
+
+
+    <!-- Profile button (admin cannot self-delete) -->
+    <h3 style="position: fixed; top: 15px; right: 25px;">
+      Logged in as {{ session['username'] }}
+    </h3>
+    
+    <!-- Background layer -->
+    <div class="container"></div>
+    
+    <!-- Preloader -->
+    <div class="terminal-loader" id="preloader">
+      <div class="terminal-header">
+        <div class="terminal-title">Status</div>
+        <div class="terminal-controls">
+          <div class="control close"></div>
+          <div class="control minimize"></div>
+          <div class="control maximize"></div>
+        </div>
+      </div>
+      <div class="content">
+        <div class="text">Loading...</div>
+      </div>
+    </div>
+
+    <!-- Main content -->
+    <div id="mainContent" style="display: none;">
+      <!-- Left Terminal Box: PHY Pool -->
+      <div class="terminal-box left-box">
+        <div class="terminal-header">
+          <div class="terminal-title">PHY Pool</div>
+          <div class="terminal-controls">
+            <div class="control close"></div>
+            <div class="control minimize"></div>
+            <div class="control maximize"></div>
+          </div>
+        </div>
+        <div class="terminal-content" id="phyPool">
+          <p>iw dev | grep phy</p>
+          {% for num in pool %}
+            phy#{{ num }}<br>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Right Top Terminal Box: SSH Ports -->
+      <div class="terminal-box right-top-box">
+        <div class="terminal-header">
+          <div class="terminal-title">SSH Ports</div>
+          <div class="terminal-controls">
+            <div class="control close"></div>
+            <div class="control minimize"></div>
+            <div class="control maximize"></div>
+          </div>
+        </div>
+        <div class="terminal-content" id="sshPorts">
+          <p>ss -tulnp</p>
+          {% for port in port_pool %}
+            {{ port }}<br>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Right Bottom Terminal Box: Container Count -->
+      <div class="terminal-box right-bottom-box">
+        <div class="terminal-header">
+          <div class="terminal-title">Containers</div>
+          <div class="terminal-controls">
+            <div class="control close"></div>
+            <div class="control minimize"></div>
+            <div class="control maximize"></div>
+          </div>
+        </div>
+        <div class="terminal-content">
+          <p>Running Containers:</p>
+          <p id="containerCount">{{ container_count }}</p>
+        </div>
+      </div>
+
+      <!-- Main Terminal Box in the Center -->
+      <div class="terminal-box main-box">
+        <div class="terminal-header">
+          <div class="terminal-title">WiFi CTF Admin Panel</div>
+          <div class="terminal-controls">
+            <div class="control close"></div>
+            <div class="control minimize"></div>
+            <div class="control maximize"></div>
+          </div>
+        </div>
+        <div class="terminal-content">
+          <h1>Manage Containers</h1>
+          <form action="{{ url_for('launch') }}" method="post">
+            <button type="submit" class="btn">Launch New Container</button>
+          </form>
+          <h2>Running Containers</h2>
+          <div id="containersTable">
+            <table border="1">
+              <tr>
+                <th>Name</th>
+                <th>IP:Port</th>
+                <th>Credentials</th>
+                <th>PHYs Used</th>
+                <th>Uptime</th>
+                <th>Action</th>
+              </tr>
+              {% for container in containers %}
+              <tr id="container-{{ container.name }}">
+                <td>{{ container.name }}</td>
+                <td>
+                  {%- set port = container.ports.split("->")[0].split(":")[-1] -%}
+                  192.168.2.101:{{ port }}
+                </td>
+                <td>{{ ctf_user }}/{{ ctf_password }}</td>
+                <td>
+                  {% set env_vars = container.env.split(';') %}
+                  {% for env in env_vars %}
+                    {% if 'AP_PHY' in env or 'CLIENT_PHY' in env or 'EXTRA_PHY' in env %}
+                      {{ env }}<br>
+                    {% endif %}
+                  {% endfor %}
+                </td>
+                <td class="uptime">{{ container.uptime }}</td>
+                <td>
+                  <form action="{{ url_for('stop', container_name=container.name) }}" method="post">
+                    <button type="submit" class="btn">Terminate</button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </table>
+          </div>
+
+          <h2>Manage Player Accounts</h2>
+          <div id="playersTable">
+            {% if players %}
+              <table border="1">
+                <tr>
+                  <th>Username</th>
+                  <th>Update Password</th>
+                  <th>Delete Account</th>
+                </tr>
+                {% for username, password in players.items() %}
+                <tr>
+                  <td>{{ username }}</td>
+                  <td>
+                    <form action="{{ url_for('update_player_password', username=username) }}" method="post">
+                      <input type="text" name="new_password" placeholder="New Password" required>
+                      <button type="submit" class="btn">Update</button>
+                    </form>
+                  </td>
+                  <td>
+                    <form action="{{ url_for('admin_delete_account', username=username) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this account?');">
+                      <button type="submit" class="btn">Delete</button>
+                    </form>
+                  </td>
+                </tr>
+                {% endfor %}
+              </table>
+            {% else %}
+              <p>No players available.</p>
+            {% endif %}
+          </div>
+          
+    
+    <script>
+      // Function to update admin panel data in real time
+      function fetchAdminStatus() {
+        fetch('/admin_status')
+          .then(response => response.json())
+          .then(data => {
+            // Update PHY Pool
+            let phyPoolDiv = document.getElementById('phyPool');
+            let phyHTML = "<p>iw dev | grep phy</p>";
+            data.pool.forEach(function(num) {
+              phyHTML += "phy#" + num + "<br>";
+            });
+            phyPoolDiv.innerHTML = phyHTML;
+            
+            // Update SSH Ports
+            let sshPortsDiv = document.getElementById('sshPorts');
+            let sshHTML = "<p>ss -tulnp</p>";
+            data.port_pool.forEach(function(port) {
+              sshHTML += port + "<br>";
+            });
+            sshPortsDiv.innerHTML = sshHTML;
+            
+            // Update Container Count
+            document.getElementById('containerCount').innerText = data.container_count;
+            
+            // Update Containers Table
+            let containersTableDiv = document.getElementById('containersTable');
+            let tableHTML = "<table border='1'><tr><th>Name</th><th>IP:Port</th><th>Credentials</th><th>PHYs Used</th><th>Uptime</th><th>Action</th></tr>";
+            data.containers.forEach(function(container) {
+              let port = container.ports.split("->")[0].split(":").pop();
+              tableHTML += "<tr id='container-" + container.name + "'>";
+              tableHTML += "<td>" + container.name + "</td>";
+              tableHTML += "<td>192.168.2.101:" + port + "</td>";
+              tableHTML += "<td>{{ ctf_user }}/{{ ctf_password }}</td>";
+              tableHTML += "<td>";
+              let envVars = container.env.split(";");
+              envVars.forEach(function(env) {
+                if (env.indexOf("AP_PHY") !== -1 || env.indexOf("CLIENT_PHY") !== -1 || env.indexOf("EXTRA_PHY") !== -1) {
+                  tableHTML += env + "<br>";
+                }
+              });
+              tableHTML += "</td>";
+              tableHTML += "<td class='uptime'>" + container.uptime + "</td>";
+              tableHTML += "<td><form action='/stop/" + container.name + "' method='post'><button type='submit' class='btn'>Terminate</button></form></td>";
+              tableHTML += "</tr>";
+            });
+            tableHTML += "</table>";
+            containersTableDiv.innerHTML = tableHTML;
+            
+            // Update Players Table (inside fetchAdminStatus)
+            let playersTableDiv = document.getElementById('playersTable');
+            if (Object.keys(data.players).length > 0) {
+              let playersHTML = "<table border='1'><tr><th>Username</th><th>Update Password</th><th>Delete Account</th></tr>";
+              for (const [username, pwd] of Object.entries(data.players)) {
+                playersHTML += "<tr>";
+                playersHTML += "<td>" + username + "</td>";
+                // Wrap the input and button inside a single form and one table cell
+                playersHTML += "<td>";
+                playersHTML += "<form action='/update_player_password/" + username + "' method='post'>";
+                playersHTML += "<input type='text' name='new_password' placeholder='New Password' required>";
+                playersHTML += "<button type='submit' class='btn'>Update</button>";
+                playersHTML += "</form>";
+                playersHTML += "</td>";
+                // Delete account form
+                playersHTML += "<td>";
+                playersHTML += "<form action='/admin/delete_account/" + username + "' method='post' onsubmit='return confirm(\"Are you sure you want to delete this account?\");'>";
+                playersHTML += "<button type='submit' class='btn'>Delete</button>";
+                playersHTML += "</form>";
+                playersHTML += "</td>";
+                playersHTML += "</tr>";
+              }
+              playersHTML += "</table>";
+              playersTableDiv.innerHTML = playersHTML;
+            } else {
+              playersTableDiv.innerHTML = "<p>No players available.</p>";
+            }
+
+          })
+          .catch(error => console.error('Error fetching admin status:', error));
+      }
+      
+      window.addEventListener('load', function(){
+        setTimeout(function(){
+          document.getElementById('preloader').style.display = 'none';
+          document.getElementById('mainContent').style.display = 'block';
+        }, 5000);
+        fetchAdminStatus();
+        setInterval(fetchAdminStatus, 5000);
+      });
+    </script>
+  </body>
+</html>

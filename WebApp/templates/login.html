@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='forms.css') }}">
+  </head>
+  <body>
+    <div class="container"></div>
+    
+    <div class="login-container">
+      <div class="login-box">
+        <h1>NGDSA WiFi CTF</h1>
+        <form class="form" action="{{ url_for('login') }}" method="post">
+          <div class="logo"></div>
+          <span class="header">Ready To Hack?</span>
+          <input type="text" name="username" placeholder="Username" class="input" required />
+          <input type="password" name="password" placeholder="Password" class="input" required />
+          <button type="submit" class="button sign-in">Sign In</button>
+          <p class="footer">
+            New here?
+            <a href="{{ url_for('signup') }}" class="link">Sign up!</a>
+          </p>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,215 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Player Panel - WiFi CTF</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
+
+  </head>
+  <body>
+
+
+
+
+
+
+
+  <!-- Profile Popup -->
+<label class="popup" style="position: fixed; top: 10px; right: 10px; z-index: 9999;">
+  <input type="checkbox" />
+  
+  <!-- Circular burger icon -->
+  <div tabindex="0" class="burger">
+    <svg
+      viewBox="0 0 24 24"
+      fill="white"
+      height="20"
+      width="20"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M12 2c2.757 0 5 2.243 5 5.001 0 2.756-2.243 5-5 5s-5-2.244-5-5c0-2.758 2.243-5.001 5-5.001zm0-2c-3.866 0-7 3.134-7 7.001 0 3.865 3.134 7 7 7s7-3.135 7-7c0-3.867-3.134-7.001-7-7.001zm6.369 13.353c-.497.498-1.057.931-1.658 1.302 2.872 1.874 4.378 5.083 4.972 7.346h-19.387c.572-2.29 2.058-5.503 4.973-7.358-.603-.374-1.162-.811-1.658-1.312-4.258 3.072-5.611 8.506-5.611 10.669h24c0-2.142-1.44-7.557-5.631-10.647z"
+      ></path>
+    </svg>
+  </div>
+
+  <!-- Popup menu -->
+  <nav class="popup-window">
+    <legend>Profile</legend>
+    <ul>
+      {% if session['username'] == 'admin' %}
+        <li>
+          <form action="{{ url_for('logout') }}" method="get">
+            <button>
+              <!-- Icon for Logout -->
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.2"
+                stroke-linecap="round"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M2.598 9h-1.055c1.482-4.638 5.83-8 10.957-8 6.347 0 11.5 5.153 11.5 11.5s-5.153 11.5-11.5 11.5c-5.127 0-9.475-3.362-10.957-8h1.055c1.443 4.076 5.334 7 9.902 7 5.795 0 10.5-4.705 10.5-10.5s-4.705-10.5-10.5-10.5c-4.568 0-8.459 2.923-9.902 7zm12.228 3l-4.604-3.747.666-.753 6.112 5-6.101 5-.679-.737 4.608-3.763h-14.828v-1h14.826z"
+                ></path>
+              </svg>
+              <span>Logout</span>
+            </button>
+          </form>
+        </li>
+      {% else %}
+        <li>
+          <form action="{{ url_for('logout') }}" method="get">
+            <button>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.2"
+                stroke-linecap="round"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M2.598 9h-1.055c1.482-4.638 5.83-8 10.957-8 6.347 0 11.5 5.153 11.5 11.5s-5.153 11.5-11.5 11.5c-5.127 0-9.475-3.362-10.957-8h1.055c1.443 4.076 5.334 7 9.902 7 5.795 0 10.5-4.705 10.5-10.5s-4.705-10.5-10.5-10.5c-4.568 0-8.459 2.923-9.902 7zm12.228 3l-4.604-3.747.666-.753 6.112 5-6.101 5-.679-.737 4.608-3.763h-14.828v-1h14.826z"
+                ></path>
+              </svg>
+              <span>Logout</span>
+            </button>
+          </form>
+        </li>
+        <li>
+          <form action="{{ url_for('delete_account') }}" method="post" onsubmit="return confirm('Are you sure you want to delete your account?');">
+            <button>
+              <!-- Icon for Delete Account -->
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.2"
+                stroke-linecap="round"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M9 3v1H4v2h1v14c0 1.103.897 2 2 2h10c1.103 0 2-.897 2-2V6h1V4h-5V3H9zm7 18H8V6h8v15zM10 8h2v10h-2V8zm4 0h2v10h-2V8z"
+                ></path>
+              </svg>
+              <span>Delete Account</span>
+            </button>
+          </form>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
+</label>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    <!-- Profile bar with Log Out and Delete Account -->
+    <h3 style="position: fixed; top: 15px; right: 25px;">
+      Logged in as {{ session['username'] }}
+    </h3>
+    
+    <div class="container"></div>
+    
+    <div class="terminal-loader" id="preloader">
+      <div class="terminal-header">
+        <div class="terminal-title">Status</div>
+        <div class="terminal-controls">
+          <div class="control close"></div>
+          <div class="control minimize"></div>
+          <div class="control maximize"></div>
+        </div>
+      </div>
+      <div class="content">
+        <div class="text">Loading...</div>
+      </div>
+    </div>
+    
+    <div id="mainContent" style="display: none;">
+      <div class="terminal-box main-box" style="width: 60%; margin: auto; margin-top: 50px;">
+        <div class="terminal-header">
+          <div class="terminal-title">WiFi CTF Player Panel</div>
+          <div class="terminal-controls">
+            <div class="control close"></div>
+            <div class="control minimize"></div>
+            <div class="control maximize"></div>
+          </div>
+        </div>
+        <div class="terminal-content" id="playerContainer">
+          {% if container %}
+            <h1>Your Container</h1>
+            <p>Name: {{ container.name }}</p>
+            <p>
+              IP:Port: <a href="#" id="sshLink" onclick="copySSHCommand('{{ container.ip }}', '{{ container.host_port }}'); return false;">
+              192.168.2.101:{{ container.host_port }}</a>
+            </p>
+            <p>Credentials: ctf-user/ctf</p>
+            <p>Uptime: <span id="uptime">{{ container.started_at }}</span></p>
+            <form action="{{ url_for('player_stop') }}" method="post">
+              <button type="submit" class="btn">Terminate</button>
+            </form>
+          {% else %}
+            <h1>No Container Running</h1>
+            <form action="{{ url_for('player_launch') }}" method="post">
+              <button type="submit" class="btn">Launch Container</button>
+            </form>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    
+    <script>
+      function copySSHCommand(ip, port) {
+        var command = "ssh ctf-user@" + ip + " -p " + port;
+        navigator.clipboard.writeText(command).then(function() {
+          alert("SSH command copied to clipboard: " + command);
+        }, function(err) {
+          alert("Failed to copy command: " + err);
+        });
+      }
+      
+      // For real-time updates on player panel: if container is terminated by admin, refresh the panel
+      function fetchPlayerStatus() {
+        fetch('/status')
+          .then(response => response.json())
+          .then(data => {
+            // Check if the player's container still exists.
+            {% if container %}
+            var currentContainerName = "{{ container.name }}";
+            var exists = data.containers.some(function(c) { return c.name === currentContainerName; });
+            if (!exists) {
+              // Container was terminated externally; reload the page
+              location.reload();
+            }
+            {% endif %}
+          })
+          .catch(error => console.error('Error fetching status:', error));
+      }
+      
+      window.addEventListener('load', function(){
+        setTimeout(function(){
+          document.getElementById('preloader').style.display = 'none';
+          document.getElementById('mainContent').style.display = 'block';
+        }, 5000);
+        setInterval(fetchPlayerStatus, 5000);
+      });
+    </script>
+  </body>
+</html>

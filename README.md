@@ -66,7 +66,7 @@ Follow these steps to set up and run the WiFi-CTF project:
 Clone the repository to your local machine:
 
 ```bash
-git clone https://github.com/yourusername/WiFi-CTF.git
+git clone https://github.com/NGDSA-Lab/WiFi-CTF.git
 cd WiFi-CTF
 ```
 

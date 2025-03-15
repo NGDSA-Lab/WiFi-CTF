@@ -45,7 +45,7 @@ echo "[*] Assigned radios: AP_PHY=phy${AP_PHY}, CLIENT_PHY=phy${CLIENT_PHY}, EXT
 docker run -d --privileged --name "$CONTAINER_NAME" -p ${HOST_PORT}:22 \
     -e AP_PHY="${AP_PHY}" -e CLIENT_PHY="${CLIENT_PHY}" -e EXTRA_PHY="${EXTRA_PHY}" \
     -e AP_IF="wlan1" -e CLIENT_IF="wlan2" -e EXTRA_IF="wlan3" \
-    ubuntu-ssh-user-tools-auto
+    ngdsa-wifi-ctf
 
 # Allow a moment for the container to start
 sleep 1

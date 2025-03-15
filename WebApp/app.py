@@ -123,7 +123,7 @@ def launch_container():
         "-e", "CLIENT_IF=wlan2",
         "-e", "EXTRA_IF=wlan3",
         "-e", f"AP_SSID={container_name}",
-        "ubuntu-ssh-user-tools-auto"
+        "ngdsa-wifi-ctf"
     ]
     result = subprocess.run(docker_cmd, capture_output=True, text=True)
     if result.returncode != 0:

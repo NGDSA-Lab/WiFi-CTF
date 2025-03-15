@@ -7,12 +7,12 @@ import secrets, string, random
 from datetime import datetime, timezone
 
 app = Flask(__name__)
-app.secret_key = 'secret_key'  # Change this to a secure random value
+app.secret_key = 'secret_key'  # !! CHANGE THIS to a secure random value !!
 current_ip = socket.gethostbyname(socket.gethostname())
 
 # In-memory user store (Will change in the future for proper persistence and password hashing)
 USERS = {
-    "admin": "admin"  # Admin account credentials. Change this to a secure random value
+    "admin": "admin"  # Admin account credentials. !! CHANGE THIS to a secure random value !!
 }
 # Mapping to track a player's container
 player_containers = {}
